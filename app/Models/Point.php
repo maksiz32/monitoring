@@ -21,13 +21,12 @@ class Point extends Model
             'provider',
             'login',
             'password',
-            'contract_id',
             'ups',
         ];
 
     public function contract()
     {
-        return $this->belongsTo(Contract::class);
+        return $this->hasOne(Contract::class);
     }
 
     public function printers()

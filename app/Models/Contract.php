@@ -16,10 +16,11 @@ class Contract extends Model
         'price',
         'login_pppoe',
         'password_pppoe',
+        'point_id'
     ];
 
     public function point()
     {
-        return $this->hasOne(Point::class);
+        return $this->belongsTo(Point::class);
     }
 }

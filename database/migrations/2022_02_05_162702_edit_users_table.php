@@ -17,6 +17,7 @@ class EditUsersTable extends Migration
             $table->string('surname')->after('name')->comment('Фамилия');
             $table->string('middle_name')->after('surname')->nullable()->comment('Отчество');
             $table->string('position')->nullable()->comment('Должность');
+            $table->string('role', 20)->default('user');
             $table->boolean('active')->default(true);
             $table->string('comment')->nullable();
             $table->string('mobile_phone')->nullable();

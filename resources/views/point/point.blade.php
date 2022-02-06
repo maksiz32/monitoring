@@ -58,15 +58,48 @@
                                         <div>
                                             <strong>{{ __('На кого договор: ') }}</strong>{{$point->contract->contracts_master }}
                                         </div>
-                                        <div><strong>{{ __('Скорость: ') }}</strong>{{$point->speed }}</div>
-                                        <div><strong>{{ __('Стоимость: ') }}</strong>{{$point->price }}</div>
-                                        <div><strong>{{ __('Логин PPPoE: ') }}</strong>{{$point->login_pppoe }}</div>
-                                        <div><strong>{{ __('Пароль PPPoE: ') }}</strong>{{$point->password_pppoe }}
+                                        <div><strong>{{ __('Скорость: ') }}</strong>{{$point->contract->speed }}</div>
+                                        <div><strong>{{ __('Стоимость: ') }}</strong>{{$point->contract->price }}</div>
+                                        <div>
+                                            <strong>{{ __('Логин PPPoE: ') }}</strong>{{$point->contract->login_pppoe }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ __('Пароль PPPoE: ') }}</strong>{{$point->contract->password_pppoe }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endif
+                        @isset($point->printers->name)
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="panelsStayOpen-headingPrinter">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapsePrinter" aria-expanded="true"
+                                            aria-controls="panelsStayOpen-collapsePrinter">
+                                        Принтеры
+                                    </button>
+                                </h2>
+                                <div id="panelsStayOpen-collapsePrinter" class="accordion-collapse collapse"
+                                     aria-labelledby="panelsStayOpen-headingPrinter">
+                                    <div class="accordion-body">
+                                        @foreach($point->printers as $printer)
+                                            <div><strong>{{ __('Принтер: ') }}</strong>{{$printer->number}}</div>
+                                            <div>
+                                                <strong>{{ __('Описание: ') }}</strong>{{$printer->description}}
+                                            </div>
+                                            <div>
+                                                <strong>{{ __('Есть запасной картридж?: ') }}</strong>
+                                                @isset($printer->pivot->is_spare)
+                                                    есть
+                                                @else
+                                                    нет
+                                                @endisset
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endisset
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="panelsStayOpen-headingUPS">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -78,7 +111,6 @@
                             <div id="panelsStayOpen-collapseUPS" class="accordion-collapse collapse"
                                  aria-labelledby="panelsStayOpen-headingUPS">
                                 <div class="accordion-body">
-                                    <div><strong>{{ __('УПС: ') }}</strong>{{$point->ups }}</div>
                                     <div><strong>{{ __('УПС: ') }}</strong>{{$point->ups }}</div>
 
                                 </div>

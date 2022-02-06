@@ -12,6 +12,11 @@ class Contract extends Model
     protected $fillable = [
         'number',
         'contracts_master',
+        'speed',
+        'price',
+        'login_pppoe',
+        'password_pppoe',
+        'point_id'
     ];
 
     public function point()

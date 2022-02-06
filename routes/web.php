@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Contracts\ContractController;
+use App\Http\Controllers\Points\PointController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +15,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes([
+                 'register' => false,
+                 'verify' => false,
+                 'reset' => false,
+                 'resend' => false
+             ]);
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::redirect('/', '/point');
+    Route::group(['prefix' => 'point', 'as' => 'point.'], function () {
+        Route::get('/', [PointController::class, 'index'])->name('point');
+        Route::get('/{id}', [PointController::class, 'point']);
+        Route::get('/{id}/edit', [PointController::class, 'edit'])->name('edit');
+        Route::get('/new', [PointController::class, 'new'])->name('new');
+        Route::post('/store', [PointController::class, 'save'])->name('store');
+    });
+
+    Route::group(['prefix' => 'contract', 'as' => 'contract.'], function () {
+        Route::get('/', [ContractController::class, 'new'])->name('new');
+        Route::get('/{id}/edit', [ContractController::class, 'edit'])->name('edit');
+        Route::post('/store', [ContractController::class, 'save'])->name('store');
+    });
 });
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -26,11 +26,6 @@ class CreatePointsTable extends Migration
             $table->string('provider', 250)->nullable();
             $table->string('login', 30)->nullable();
             $table->string('password', 20)->nullable();
-            $table->unsignedBigInteger('contract_id')->nullable()->unique();
-            $table->string('speed', 50)->nullable();
-            $table->string('price', 30)->nullable();
-            $table->string('login_pppoe', 30)->nullable();
-            $table->string('password_pppoe', 20)->nullable();
             $table->string('ups', 250)->nullable();
             $table->timestamps();
         });

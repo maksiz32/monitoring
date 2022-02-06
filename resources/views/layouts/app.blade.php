@@ -20,13 +20,13 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0 m-0">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">
-                    <img src="{{asset('img/logo/logo.png')}}" alt="" height="40px">
-                </a>
-                <div class="text-right">
+<div id="app">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0 m-0">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="{{asset('img/logo/logo.png')}}" alt="" height="40px">
+            </a>
+            <div class="text-right">
                 @guest
                     @if (Route::has('login'))
                         <div class="nav-item pull-right">
@@ -37,15 +37,30 @@
                     <div class="collapse navbar-collapse pull-right" id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ Auth::user()->name }}
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end"
+                                    aria-labelledby="navbarDarkDropdownMenuLink">
                                     <li><a class="dropdown-item" href="#">Создать подразделение</a></li>
-                                    <li><a class="dropdown-item" href="#">Создать принтер</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('printer.new') }}">Создать принтер</a>
+                                    </li>
                                     <li><a class="dropdown-item" href="#">Создать удалённое управление</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('contract.new') }}">Создать договор</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('contract.new') }}">Создать договор</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Договоры</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{{ route('printer.list') }}">Принтеры</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Удаленные подключения</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault();
@@ -53,7 +68,8 @@
                                             {{ __('Выход') }}
                                         </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                              class="d-none">
                                             @csrf
                                         </form>
                                     </li>
@@ -62,13 +78,13 @@
                         </ul>
                     </div>
                 @endguest
-                </div>
             </div>
-        </nav>
-
-        <div class="py-4">
-            @yield('content')
         </div>
+    </nav>
+
+    <div class="py-4">
+        @yield('content')
     </div>
+</div>
 </body>
 </html>

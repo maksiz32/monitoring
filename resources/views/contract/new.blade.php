@@ -20,7 +20,7 @@
 
                                 <div class="col-md-6">
                                     <input id="number" type="text"
-                                           class="form-control @error('email') is-invalid @enderror" name="number"
+                                           class="form-control @error('number') is-invalid @enderror" name="number"
                                            value="@isset($contract->number){{$contract->number}} @else {{old('number')}} @endisset" required autofocus>
 
                                     @error('number')
@@ -122,7 +122,7 @@
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Добавить') }}
+                                        {{ __('Ввод') }}
                                     </button>
                                 </div>
                             </div>

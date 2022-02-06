@@ -12,10 +12,14 @@ class Contract extends Model
     protected $fillable = [
         'number',
         'contracts_master',
+        'speed',
+        'price',
+        'login_pppoe',
+        'password_pppoe',
     ];
 
     public function point()
     {
-        return $this->belongsTo(Point::class);
+        return $this->hasOne(Point::class);
     }
 }

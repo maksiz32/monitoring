@@ -21,17 +21,13 @@ class Point extends Model
             'provider',
             'login',
             'password',
-            'contract_id'.
-            'speed',
-            'price',
-            'login_pppoe',
-            'password_pppoe',
+            'contract_id',
             'ups',
         ];
 
     public function contract()
     {
-        return $this->hasOne(Contract::class);
+        return $this->belongsTo(Contract::class);
     }
 
     public function printers()
@@ -47,5 +43,15 @@ class Point extends Model
     public function remoteControls()
     {
         return $this->hasMany(RemoteControl::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function pointsByCity()
+    {
+        $points = self::select('id', 'city', 'address')->get();
+
+        return $points->groupBy('city');
     }
 }

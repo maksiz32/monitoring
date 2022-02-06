@@ -33,8 +33,8 @@ class ContractController extends Controller
 
     public function save(ContractRequest $request, Contract $contract)
     {
-        $contract = $contract->fill($request->validated());
-        $contract_id = $this->store($contract);
+        $contractRes = $contract->fill($request->validated());
+        $contract_id = $this->store($contractRes);
 
         if (isset($contract_id)) {
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Contracts\ContractController;
 use App\Http\Controllers\Points\PointController;
+use App\Http\Controllers\Printers\PrinterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,5 +37,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [ContractController::class, 'new'])->name('new');
         Route::get('/{id}/edit', [ContractController::class, 'edit'])->name('edit');
         Route::post('/store', [ContractController::class, 'save'])->name('store');
+    });
+
+    Route::group(['prefix' => 'printer', 'as' => 'printer.'], function () {
+        Route::get('/', [PrinterController::class, 'list'])->name('list');
+        Route::get('/new', [PrinterController::class, 'new'])->name('new');
+        Route::get('/{id}/edit', [PrinterController::class, 'edit'])->name('edit');
+        Route::post('/store', [PrinterController::class, 'save'])->name('store');
     });
 });

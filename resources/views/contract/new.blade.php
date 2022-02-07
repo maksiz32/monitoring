@@ -21,7 +21,8 @@
                                 <div class="col-md-6">
                                     <input id="number" type="text"
                                            class="form-control @error('number') is-invalid @enderror" name="number"
-                                           value="@isset($contract->number){{$contract->number}} @else {{old('number')}} @endisset" required autofocus>
+                                           value="@isset($contract->number){{$contract->number}} @else {{old('number')}} @endisset"
+                                           required autofocus>
 
                                     @error('number')
                                     <span class="invalid-feedback" role="alert">
@@ -118,6 +119,29 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            @isset($points)
+                                <div class="row mb-3">
+                                    <label for="points_id"
+                                           class="col-md-4 col-form-label text-md-end">{{ __('На какой точке договор') }}</label>
+
+                                    <div class="col-md-6">
+                                        <select class="form-select" aria-label="На какой точке договор">
+                                            <option selected>Open this select menu</option>
+                                            @foreach($points as $point)
+                                                <option
+                                                    value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('points_id')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endisset
 
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">

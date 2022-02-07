@@ -25,7 +25,7 @@
                             @endforeach
                         </li>
                         <li class="border-top my-3"></li>
-                        <a href="№" class="link-dark rounded">{{ __('Выгрузить') }}</a>
+                        <a href="#" class="link-dark rounded">{{ __('Выгрузить') }}</a>
                     </ul>
                 </div>
             </div>

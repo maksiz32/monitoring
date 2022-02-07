@@ -14,10 +14,8 @@ class PrinterController extends Controller
         return view('printer.new', ['printer' => $printer]);
     }
 
-    public function edit($id)
+    public function edit(Printer $printer)
     {
-        $printer = Printer::find($id);
-
         return view('printer.new', ['printer' => $printer]);
     }
 
@@ -36,11 +34,11 @@ class PrinterController extends Controller
         $printer_id = $this->store($printerRes);
 
         if (isset($printer_id)) {
-            return redirect(url('/'))
-                ->with(['message' => __('messages.contract.store.success')]);
+            return redirect(url('/point'))
+                ->with(['message' => __('messages.printer.store.success')]);
         }
 
-        return back()->with(['errors' => __('messages.contract.store.fail')]);
+        return back()->with(['errors' => __('messages.printer.store.fail')]);
     }
 
     public function list()

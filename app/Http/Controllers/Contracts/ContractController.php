@@ -15,10 +15,8 @@ class ContractController extends Controller
         return view('contract.new', ['contract' => $contract]);
     }
 
-    public function edit($id)
+    public function edit(Contract $contract)
     {
-        $contract = Contract::find($id);
-
         return view('contract.new', ['contract' => $contract]);
     }
 
@@ -40,25 +38,15 @@ class ContractController extends Controller
 
             $point = Point::where('contract_id', $contract->id)->first();
 
-            return redirect(url('/'))
+            return redirect(url('/point'))
                 ->with(['message' => __('messages.contract.store.success')]);
         }
 
         return back()->with(['errors' => __('messages.contract.store.fail')]);
     }
 
-//    public function input(ContractRequest $request)
-//    {
-//        $contract = Contract::create($request->validated());
-//        $contract_id = $this->store($contract);
-//
-//        if (isset($contract_id)) {
-//
-//            return redirect(url('/'))
-//                ->with(['message' => __('messages.contract.input.success')]);
-//        }
-//
-//        return back()->with(['errors' => __('messages.contract.input.fail')]);
-//    }
-
+    public function list()
+    {
+        return view('contract.list', ['contracts' => Contract::with(['points'])->get()]);
+    }
 }

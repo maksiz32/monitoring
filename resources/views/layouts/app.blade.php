@@ -52,7 +52,7 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Договоры</a>
+                                    <li><a class="dropdown-item" href="{{ route('contract.list') }}">Договоры</a>
                                     </li>
                                     <li><a class="dropdown-item" href="{{ route('printer.list') }}">Принтеры</a>
                                     </li>

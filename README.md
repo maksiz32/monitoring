@@ -1,2 +1,1 @@
 # monitoring project
-Андрей Усманов

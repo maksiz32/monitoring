@@ -34,7 +34,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'contract', 'as' => 'contract.'], function () {
-        Route::get('/', [ContractController::class, 'new'])->name('new');
+        Route::get('/', [ContractController::class, 'list'])->name('list');
+        Route::get('/new', [ContractController::class, 'new'])->name('new');
         Route::get('/{id}/edit', [ContractController::class, 'edit'])->name('edit');
         Route::post('/store', [ContractController::class, 'save'])->name('store');
     });

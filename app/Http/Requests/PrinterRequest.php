@@ -25,7 +25,7 @@ class PrinterRequest extends FormRequest
     {
         return [
             'id' => 'nullable|integer|exists:points,id',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:printers,name',
             'description' => 'nullable|string',
         ];
     }
@@ -37,6 +37,7 @@ class PrinterRequest extends FormRequest
             'integer' => 'Значение :attribute может быть только числом',
             'exists' => 'Передано несуществующее значение :attribute',
             'string' => 'Значение :attribute может быть только строкой',
+            'unique' => ':attribute уже существует',
         ];
     }
 

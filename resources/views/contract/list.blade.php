@@ -26,7 +26,7 @@
                     <th>{{$contract->login_pppoe}}</th>
                     <th>{{$contract->password_pppoe}}</th>
                     <th>{{$contract->point->city . ', ' . $contract->point->address}}</th>
-                    <th><a href="{{ route('contract.edit', ['id' => $contract->id]) }}" class="link-warning">Edit</a></th>
+                    <th><a href="{{ route('contract.edit', ['contract' => $contract->id]) }}" class="link-warning">Edit</a></th>
                 </tr>
             @endforeach
             </tbody>

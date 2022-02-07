@@ -26,14 +26,17 @@ Auth::routes([
 
 Route::group(['middleware' => 'auth'], function () {
     Route::redirect('/', '/point');
+
     Route::group(['prefix' => 'point', 'as' => 'point.'], function () {
         Route::get('/', [PointController::class, 'index'])->name('point');
-        Route::get('/{id}', [PointController::class, 'point']);
+        Route::get('/{id}/view', [PointController::class, 'point']);
 
         Route::group(['middleware' => 'is_admin'], function () {
             Route::get('/{id}/edit', [PointController::class, 'edit'])->name('edit');
             Route::get('/new', [PointController::class, 'new'])->name('new');
             Route::post('/store', [PointController::class, 'save'])->name('store');
+            Route::get('/import-xls', [PointController::class, 'importXlsView'])->name('view-import-xls');
+            Route::post('/save-xls', [PointController::class, 'saveXLS'])->name('saveXLS');
         });
     });
 
@@ -56,4 +59,5 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/store', [PrinterController::class, 'save'])->name('store');
         });
     });
+
 });

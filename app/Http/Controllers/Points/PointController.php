@@ -28,5 +28,13 @@ class PointController extends Controller
         return view('point.point', ['points' => $points, 'point' => $point]);
     }
 
-    public function importXls() {}
+    public function importXlsView()
+    {
+        return view('importxls.import');
+    }
+
+    public function saveXLS()
+    {
+        //
+    }
 }

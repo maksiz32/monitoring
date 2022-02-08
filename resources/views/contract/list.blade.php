@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
+        <h1>Договоры</h1>
         <table class="table table-hover">
             <thead>
             <tr>

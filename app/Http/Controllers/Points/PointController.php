@@ -64,7 +64,7 @@ class PointController extends Controller
                 array_pop($row);
                 $points['city'] = $row['A'];
                 $points['address'] = $row['B'];
-                $points['is_active'] = !empty($row['C']);
+                $points['is_active'] = (empty($row['C']));
                 $points['router'] = $row['D'];
                 $points['lan_ip'] = $row['E'];
                 $points['vpn_ip'] = $row['F'];

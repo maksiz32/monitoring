@@ -23,12 +23,12 @@ class PointController extends Controller
         return view('point.main', ['points' => $points]);
     }
 
-    public function point($id)
+    public function point(Point $point, $city)
     {
         $points = Point::pointsByCity();
-        $point = Point::with(['contract', 'remotes'])->find($id);
+        $point = Point::with(['contract', 'remotes'])->find($point->id);
 
-        return view('point.point', ['points' => $points, 'point' => $point]);
+        return view('point.point', ['points' => $points, 'point' => $point, 'city' => $city]);
     }
 
     public function importXlsView()

@@ -17,15 +17,18 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') . '?v=' . uniqid('', true) }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0 m-0">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark p-0 m-0">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand navbar-brand__logo" href="/">
                 <img src="{{asset('img/logo/logo.png')}}" alt="" height="40px">
             </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="text-right">
                 @guest
                     @if (Route::has('login'))

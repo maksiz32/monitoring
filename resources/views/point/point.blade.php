@@ -113,10 +113,12 @@
                                      aria-labelledby="panelsStayOpen-headingRemote">
                                     <div class="accordion-body">
                                         @foreach($point->remotes as $remote)
-                                            <div><strong>{{ __('Договор: ') }}</strong>{{$remote->number }}</div>
+                                            <div><strong>{{ __('Номер: ') }}</strong>{{$remote->number}}</div>
+                                            @isset($remote->description)
                                             <div>
-                                                <strong>{{ __('На кого договор: ') }}</strong>{{$remote->description}}
+                                                <strong>{{ __('Описание: ') }}</strong>{{$remote->description}}
                                             </div>
+                                            @endisset
                                         @endforeach
                                     </div>
                                 </div>

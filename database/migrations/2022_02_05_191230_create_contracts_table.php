@@ -21,7 +21,7 @@ class CreateContractsTable extends Migration
             $table->string('price', 30)->nullable();
             $table->string('login_pppoe', 30)->nullable();
             $table->string('password_pppoe', 20)->nullable();
-            $table->foreignId('points_id')
+            $table->foreignId('point_id')
                 ->constrained()
                 ->onDelete('cascade');
             $table->timestamps();

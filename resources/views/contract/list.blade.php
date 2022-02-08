@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            @foreach($contracts as $conract)
+            @foreach($contracts as $contract)
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
                     <th>{{$contract->number}}</th>

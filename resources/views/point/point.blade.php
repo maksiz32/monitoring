@@ -100,6 +100,29 @@
                                 </div>
                             </div>
                         @endisset
+                        @if(isset($point->remotes[0]['number']))
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="panelsStayOpen-headingRemote">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseRemote" aria-expanded="true"
+                                            aria-controls="panelsStayOpen-collapseRemote">
+                                        Удалённое управление
+                                    </button>
+                                </h2>
+                                <div id="panelsStayOpen-collapseRemote" class="accordion-collapse collapse"
+                                     aria-labelledby="panelsStayOpen-headingRemote">
+                                    <div class="accordion-body">
+                                        @foreach($point->remotes as $remote)
+                                            <div><strong>{{ __('Договор: ') }}</strong>{{$remote->number }}</div>
+                                            <div>
+                                                <strong>{{ __('На кого договор: ') }}</strong>{{$remote->description}}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        @isset($point->ups)
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="panelsStayOpen-headingUPS">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -112,11 +135,10 @@
                                  aria-labelledby="panelsStayOpen-headingUPS">
                                 <div class="accordion-body">
                                     <div><strong>{{ __('УПС: ') }}</strong>{{$point->ups }}</div>
-
                                 </div>
-
                             </div>
                         </div>
+                        @endisset
                     </div>
                 </div>
             </div>

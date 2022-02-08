@@ -21,7 +21,7 @@ class CreatePointsTable extends Migration
             $table->string('router', 50)->nullable();
             $table->ipAddress('lan_ip')->nullable();
             $table->ipAddress('vpn_ip')->nullable();
-            $table->ipAddress('wan_ip')->nullable();
+            $table->string('wan_ip')->nullable();
             $table->boolean('telephony_status')->nullable()->default(null);
             $table->string('provider', 250)->nullable();
             $table->string('login', 30)->nullable();

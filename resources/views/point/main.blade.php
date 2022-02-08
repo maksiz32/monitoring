@@ -8,9 +8,9 @@
                 <div class="card-body text-center">
                     {{ __('Выберите подразделение') }}
 
-                    @if(session()->get('message'))
+                    @if(session('message'))
                         <div class="alert alert-success mt-3 mb-3">
-                            {!! session()->get('message') !!}
+                            {!! session('message') !!}
                         </div>
                     @endif
 

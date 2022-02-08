@@ -11,12 +11,19 @@
                         <div class="alert alert-success" role="alert">
                             ВНИМАНИЕ! Данное действие очистит все старые данные и запишет новые!
                         </div>
-                        <form method="POST" action="{{ route('point.saveXLS') }}">
+
+                        @if(session()->get('message'))
+                            <div class="alert alert-success mt-3 mb-3">
+                                {!! session()->get('message') !!}
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('point.saveXLS') }}" enctype="multipart/form-data">
                             @csrf
 
                             <div class="mb-3">
                                 <label for="xlsFile" class="form-label">Выберите файл Excel</label>
-                                <input class="form-control" type="file" id="xlsFile"
+                                <input class="form-control" type="file" id="xlsFile" name="xlsFile"
                                     accept=".application/vnd.sealed.xls, .xls, .xlsx"
                                     required>
                             </div>

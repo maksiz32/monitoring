@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePointHasDevicesTable extends Migration
+class CreatePointDeviceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePointHasDevicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('point_has_devices', function (Blueprint $table) {
+        Schema::create('point_device', function (Blueprint $table) {
             $table->id();
             $table->foreignId('point_id')
                 ->constrained()
@@ -33,6 +33,6 @@ class CreatePointHasDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('point_has_devices');
+        Schema::dropIfExists('point_device');
     }
 }

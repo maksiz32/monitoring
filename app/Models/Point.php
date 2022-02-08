@@ -39,9 +39,9 @@ class Point extends Model
         return $this->belongsToMany(Device::class)->withPivot('ip');
     }
 
-    public function remoteControls()
+    public function remotes()
     {
-        return $this->hasMany(RemoteControl::class);
+        return $this->hasMany(RemoteControl::class, 'point_id', 'id');
     }
 
     /**

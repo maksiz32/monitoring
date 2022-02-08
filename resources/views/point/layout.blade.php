@@ -9,16 +9,17 @@
                         <li class="mb-1">
                             @foreach($points as $pointCity => $value)
                                 <button class="btn btn-toggle align-items-center rounded collapsed"
-                                        data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                                        data-bs-toggle="collapse" data-bs-target="#home-collapse-{{$loop->index}}" aria-expanded="false">
                                     {{$pointCity}}
                                 </button>
-                                <div class="collapse" id="home-collapse">
+                                <div class="collapse" id="home-collapse-{{$loop->index}}">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                         @foreach($value as $point)
                                             <li>
-                                                <a href="{{ url('point/' . $point->id) }}"
+                                                <a href="{{ route('point.onepoint', [$point->id]) }}"
                                                    class="link-dark rounded">{{$point->address}}</a>
                                             </li>
+                                            <br/>
                                         @endforeach
                                     </ul>
                                 </div>

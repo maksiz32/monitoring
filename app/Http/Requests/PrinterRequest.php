@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PrinterRequest extends FormRequest
 {
@@ -24,9 +25,10 @@ class PrinterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'nullable|integer|exists:points,id',
-            'name' => 'required|string|max:255|unique:printers,name',
+            'id' => 'sometimes|nullable|integer|exists:printers,id',
+            'name' => ['required','string','max:255','unique:printers,name'],
             'description' => 'nullable|string',
+            'pointId' => 'sometimes|nullable|integer|exists:points,id'
         ];
     }
 
@@ -46,6 +48,7 @@ class PrinterRequest extends FormRequest
         return [
             'name' => 'Принтер',
             'description' => 'Описание',
+            'pointId' => 'Подразделение',
         ];
     }
 }

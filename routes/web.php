@@ -50,14 +50,8 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
-    Route::group(['prefix' => 'printer', 'as' => 'printer.'], function () {
-        Route::get('/', [PrinterController::class, 'list'])->name('list');
-
-        Route::group(['middleware' => 'is_admin'], function () {
-            Route::get('/new', [PrinterController::class, 'new'])->name('new');
-            Route::get('/{printer}/edit', [PrinterController::class, 'edit'])->name('edit');
-            Route::post('/store', [PrinterController::class, 'save'])->name('store');
-        });
+    Route::group(['middleware' => 'is_admin'], function () {
+        Route::resource('/printer', PrinterController::class);
     });
 
 });

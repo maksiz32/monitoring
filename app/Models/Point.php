@@ -31,7 +31,7 @@ class Point extends Model
 
     public function printers()
     {
-        return $this->belongsToMany(Printer::class)->withPivot('is_spare');
+        return $this->belongsToMany(Printer::class);
     }
 
     public function devices()

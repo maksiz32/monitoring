@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                         @endif
-                        @isset($point->printers->name)
+                        @isset($point->printers[0]['name'])
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="panelsStayOpen-headingPrinter">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -83,18 +83,21 @@
                                      aria-labelledby="panelsStayOpen-headingPrinter">
                                     <div class="accordion-body">
                                         @foreach($point->printers as $printer)
-                                            <div><strong>{{ __('Принтер: ') }}</strong>{{$printer->number}}</div>
+                                            <div><strong>{{ __('Принтер: ') }}</strong>{{$printer->name}}</div>
                                             <div>
                                                 <strong>{{ __('Описание: ') }}</strong>{{$printer->description}}
                                             </div>
                                             <div>
                                                 <strong>{{ __('Есть запасной картридж?: ') }}</strong>
-                                                @isset($printer->pivot->is_spare)
+                                                @if(isset($printer->pivot->is_spare) && $printer->pivot->is_spare === true)
                                                     есть
                                                 @else
                                                     нет
                                                 @endisset
                                             </div>
+                                            @if(!$loop->last)
+                                                <hr class="divider">
+                                            @endif
                                         @endforeach
                                     </div>
                                 </div>

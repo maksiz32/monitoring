@@ -47,7 +47,7 @@
                                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end"
                                     aria-labelledby="navbarDarkDropdownMenuLink">
                                     <li><a class="dropdown-item" href="#">Создать подразделение</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('printer.new') }}">Создать принтер</a>
+                                    <li><a class="dropdown-item" href="{{ route('printer.create') }}">Создать принтер</a>
                                     </li>
                                     <li><a class="dropdown-item" href="#">Создать удалённое управление</a></li>
                                     <li><a class="dropdown-item" href="{{ route('contract.new') }}">Создать договор</a>
@@ -62,7 +62,7 @@
                                     </li>
                                     <li><a class="dropdown-item" href="{{ route('contract.list') }}">Договоры</a>
                                     </li>
-                                    <li><a class="dropdown-item" href="{{ route('printer.list') }}">Принтеры</a>
+                                    <li><a class="dropdown-item" href="{{ route('printer.index') }}">Принтеры</a>
                                     </li>
                                     <li><a class="dropdown-item" href="#">Удаленные подключения</a>
                                     </li>

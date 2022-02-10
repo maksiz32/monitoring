@@ -122,11 +122,11 @@
 
                             @isset($points)
                                 <div class="row mb-3">
-                                    <label for="points_id"
+                                    <label for="point_id"
                                            class="col-md-4 col-form-label text-md-end">{{ __('На какой точке договор') }}</label>
 
                                     <div class="col-md-6">
-                                        <select class="form-select" aria-label="На какой точке договор">
+                                        <select class="form-select" aria-label="На какой точке договор" name="point_id">
                                             <option class="text-muted">Нет привязки к точке</option>
                                             @foreach($points as $point)
                                                 <option

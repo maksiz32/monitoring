@@ -24,32 +24,23 @@ class ContractController extends Controller
 
     public function edit(Contract $contract)
     {
-        $contract = Contract::with(['point'])->find($contract->id);
+        $contract = Contract::findOrFail($contract->id);
         $points = Point::all();
 
         return view('contract.new', ['contract' => $contract, 'points' => $points]);
     }
 
-    public function store(Contract $contract): ?int
-    {
-        if ($contract->save()) {
-            return $contract->id;
-        }
-
-        return null;
-    }
-
     public function save(ContractRequest $request, Contract $contract)
     {
-        $contractRes = $contract->fill($request->validated());
-        $contract_id = $this->store($contractRes);
+        $contract->fill($request->validated());
+        $contract_id = $contract->save();
 
         if (isset($contract_id)) {
             return redirect(url('/point'))
-                ->with(['message' => __('messages.contract.store.success')]);
+                ->with('message', __('messages.contract.store.success'));
         }
 
-        return back()->with(['errors' => __('messages.contract.store.fail')]);
+        return back()->with('errors', __('messages.contract.store.fail'));
     }
 
     public function list()

@@ -8,20 +8,25 @@
                     <div class="card-header">{{ __('Создать/отредактировать принтер') }}</div>
 
                     <div class="card-body">
+
+                        @if(session()->get('message'))
+                            <div class="alert alert-success mt-3 mb-3">
+                                {!! session()->get('message') !!}
+                            </div>
+                        @endif
+
                         <form method="POST" action="{{ route('printer.store') }}">
                             @csrf
-                            @isset($printer->id)
-                                <input type="hidden" name="id" value="{{$printer->id}}">
-                            @endisset
-
                             <div class="row mb-3">
                                 <label for="name"
                                        class="col-md-4 col-form-label text-md-end">{{ __('Принтер') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="name" type="text"
-                                           class="form-control @error('name') is-invalid @enderror" name="name"
-                                           value="@isset($printer->name){{$printer->name}}@else{{old('name')}}@endisset" required autofocus>
+                                           class="form-control @error('name') is-invalid @enderror"
+                                           name="name"
+                                           value="{{old('name')}}"
+                                           required autofocus>
 
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -39,7 +44,7 @@
                                     <textarea id="description" type="text"
                                               class="form-control @error('description') is-invalid @enderror"
                                               name="description"
-                                              required>@isset($printer->description){{$printer->description}} @else {{old('description')}}@endisset</textarea>
+                                    >{{old('description')}}</textarea>
 
                                     @error('description')
                                     <span class="invalid-feedback" role="alert">
@@ -48,6 +53,30 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            @isset($points)
+                                <div class="row mb-3">
+                                    <label for="points_id"
+                                           class="col-md-4 col-form-label text-md-end">{{ __('На какой точке принтер') }}</label>
+
+                                    <div class="col-md-6">
+                                        <select class="form-select" aria-label="На какой точке принтер"
+                                                name="pointId">
+                                            <option class="text-muted" value="">Нет привязки к точке
+                                            </option>
+                                            @foreach($points as $point)
+                                                <option value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('points_id')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endisset
 
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">

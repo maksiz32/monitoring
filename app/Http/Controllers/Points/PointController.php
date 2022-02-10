@@ -26,7 +26,7 @@ class PointController extends Controller
     public function point(Point $point, $city)
     {
         $points = Point::pointsByCity();
-        $point = Point::with(['contract', 'remotes'])->find($point->id);
+        $point = Point::findOrFail($point->id);
 
         return view('point.point', ['points' => $points, 'point' => $point, 'city' => $city]);
     }
@@ -105,6 +105,6 @@ class PointController extends Controller
             }
         }
 
-        return redirect()->route('point.point')->with(['message' => __('messages.xls.store.success')]);
+        return redirect()->route('point.point')->with('message', __('messages.xls.store.success'));
     }
 }

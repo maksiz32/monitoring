@@ -11,11 +11,11 @@ class Printer extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'description'
     ];
 
     public function points()
     {
-        return $this->belongsToMany(Point::class)->withPivot('is_spare');
+        return $this->belongsToMany(Point::class);
     }
 }

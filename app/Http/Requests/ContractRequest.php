@@ -24,13 +24,14 @@ class ContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'nullable|integer|exists:points,id',
+            'id' => 'nullable|integer|exists:contracts,id',
             'number' => 'required|string|max:255',
             'contracts_master' => 'required|string',
             'speed' => 'nullable|string',
             'price' => 'nullable|string',
             'login_pppoe' => 'nullable|string',
             'password_pppoe' => 'nullable|string',
+            'point_id' => 'nullable|integer|exists:points,id',
         ];
     }
 
@@ -53,6 +54,7 @@ class ContractRequest extends FormRequest
             'price' => 'Стоимость по договору',
             'login_pppoe' => 'Логин PPPoE',
             'password_pppoe' => 'Пароль PPPoE',
+            'point_id' => 'Подразделение',
         ];
     }
 

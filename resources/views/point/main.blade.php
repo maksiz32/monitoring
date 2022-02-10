@@ -10,7 +10,7 @@
 
                     @if(session('message'))
                         <div class="alert alert-success mt-3 mb-3">
-                            {!! session('message') !!}
+                            {!! session()->get('message') !!}
                         </div>
                     @endif
 

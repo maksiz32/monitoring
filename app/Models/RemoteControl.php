@@ -17,6 +17,6 @@ class RemoteControl extends Model
 
     public function point()
     {
-        return $this->belongsTo(Point::class, 'id', 'point_id');
+        return $this->belongsTo(Point::class);
     }
 }

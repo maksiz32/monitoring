@@ -31,12 +31,12 @@ class Point extends Model
 
     public function printers()
     {
-        return $this->belongsToMany(Printer::class);
+        return $this->hasMany(Printer::class);
     }
 
     public function devices()
     {
-        return $this->belongsToMany(Device::class)->withPivot('ip');
+        return $this->hasMany(Device::class);
     }
 
     public function remotes()
@@ -49,12 +49,13 @@ class Point extends Model
      */
     public static function pointsByCity()
     {
-        $points = self::select('id', 'city', 'address')->get();
+        $points = self::select('id', 'city', 'address')->orderBy('id')->get();
 
         return $points->groupBy('city');
     }
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'telephony_status' => 'boolean'
     ];
 }

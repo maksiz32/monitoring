@@ -26,9 +26,11 @@ class PrinterRequest extends FormRequest
     {
         return [
             'id' => 'sometimes|nullable|integer|exists:printers,id',
-            'name' => ['required','string','max:255','unique:printers,name'],
-            'description' => 'nullable|string',
-            'pointId' => 'sometimes|nullable|integer|exists:points,id'
+            'name' => 'required|string|max:60',
+            'description' => 'sometimes|nullable|string',
+            'serial_number' => 'sometimes|nullable|string|max:60',
+            'point_id' => 'sometimes|nullable|integer|exists:points,id',
+            'is_spare' => 'integer'
         ];
     }
 
@@ -48,7 +50,7 @@ class PrinterRequest extends FormRequest
         return [
             'name' => 'Принтер',
             'description' => 'Описание',
-            'pointId' => 'Подразделение',
+            'point_id' => 'Подразделение',
         ];
     }
 }

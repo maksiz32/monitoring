@@ -3,12 +3,12 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div id="sidebarMenu" class="col-md-3 col-lg-2 d-block bg-light collapse">
+            <div id="sidebarMenu" class="col-lg-2 d-block bg-light collapse">
                 <div class="position-sticky pt-3">
-                    <ul class="list-unstyled ps-0">
-                        <li class="mb-1">
+                    <ul class="list-unstyled ps-0 left-menu__list">
+                        <li class="mb-1 left-menu__list-item">
                             @foreach($points as $pointCity => $value)
-                                <button class="btn btn-toggle align-items-center rounded collapsed"
+                                <button class="btn btn-toggle align-items-center left-menu__list-city__btn rounded collapsed"
                                         data-bs-toggle="collapse" data-bs-target="#home-collapse-{{$loop->index}}"
                                         @if(isset($city) && $city == $loop->index) aria-expanded="true"
                                         @else aria-expanded="false" @endif>
@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="col-lg-10 px-md-4">
                 @yield('point_map')
             </div>
         </div>

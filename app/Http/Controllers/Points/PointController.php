@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Points;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PointRequest;
 use App\Models\Contract;
 use App\Models\Point;
 use App\Models\RemoteControl;
@@ -13,7 +14,7 @@ class PointController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('is_admin')->except(['index']);
+        $this->middleware('is_admin')->except(['index', 'point']);
     }
 
     public function index()
@@ -28,7 +29,7 @@ class PointController extends Controller
         $points = Point::pointsByCity();
         $point = Point::findOrFail($point->id);
 
-        return view('point.point', ['points' => $points, 'point' => $point, 'city' => $city]);
+        return view('point.point', ['points' => $points, 'point' => $point, 'city' => (int)$city]);
     }
 
     public function importXlsView()
@@ -44,7 +45,7 @@ class PointController extends Controller
 
         if (!in_array($fileExtension, $allowedExtensions)) {
             return redirect()->route('view-import-xls')
-                ->with(['message' => __('messages.xls.store.fail')]);
+                ->with('message', __('messages.xls.store.fail'));
         }
 
         $spreadsheet = IOFactory::load($file);
@@ -62,6 +63,7 @@ class PointController extends Controller
 
             foreach ($rows as $row) {
                 array_pop($row);
+                // Точки
                 $points['city'] = $row['A'];
                 $points['address'] = $row['B'];
                 $points['is_active'] = (empty($row['C']));
@@ -78,6 +80,7 @@ class PointController extends Controller
                 $point = Point::create($points);
 
                 if (!empty($row['Q'])) {
+                    // Договоры
                     $contracts['number'] = $row['Q'];
                     $contracts['contracts_master'] = !empty($row['L']) ? $row['L'] : '';
                     $contracts['speed'] = !empty($row['M']) ? $row['M'] : '';
@@ -86,25 +89,90 @@ class PointController extends Controller
                     $contracts['password_pppoe'] = !empty($row['P']) ? $row['P'] : '';
                     $contracts['point_id'] = $point->id;
 
-                    $contract = Contract::create($contracts);
+                    Contract::create($contracts);
                 }
 
                 if (isset($row['T'])) {
+                    // Удалённое управление
                     $remotes['number'] = $row['T'];
                     $remotes['point_id'] = $point->id;
 
-                    $remote = RemoteControl::create($remotes);
+                    RemoteControl::create($remotes);
                 }
 
                 if (isset($row['U'])) {
+                    // Удалённое управление
                     $remotes['number'] = $row['U'];
                     $remotes['point_id'] = $point->id;
 
-                    $remote = RemoteControl::create($remotes);
+                    RemoteControl::create($remotes);
                 }
             }
         }
 
         return redirect()->route('point.point')->with('message', __('messages.xls.store.success'));
+    }
+
+    public function new()
+    {
+        return view('point.new');
+    }
+
+    public function store(PointRequest $request)
+    {
+        $point = new Point();
+        $point = $point->fill($request->validated());
+        $point->is_active = (int)$request->is_active === 1;
+        $point->telephony_status = (int)$request->telephony_status === 1;
+
+        if ($point->save()) {
+            return redirect(route('point.onepoint', ['point' => $point, 'city' => $point->city]))
+                ->with('message', __('messages.point.input.success'));
+        }
+
+        return back()->with('errors', __('messages.point.input.fail'));
+    }
+
+    public function edit(Point $point)
+    {
+        return view('point.edit', ['point' => Point::findOrFail($point->id)]);
+    }
+
+    public function update(PointRequest $request, Point $point)
+    {
+        $point = $point->fill($request->validated());
+        $point->is_active = $point->is_active === 1;
+        $point->telephony_status = $point->telephony_status === 1;
+
+        if ($point->save()) {
+            return redirect(route('point.onepoint', ['point' => $point, 'city' => $point->city]))
+                ->with('message', __('messages.point.edit.success'));
+        }
+
+        return back()->with('errors', __('messages.point.edit.fail'));
+    }
+
+    public function close(Point $point)
+    {
+        // Сделать is_active = false
+        $point->is_active = false;
+
+        if ($point->save()) {
+            return redirect(route('point.onepoint', ['point' => $point, 'city' => $point->city]))
+                ->with('message', __('messages.point.close.success'));
+        }
+
+        return back()->with('errors', __('messages.point.close.fail'));
+    }
+
+    public function ping($ip)
+    {
+        exec("ping -c 4 www.google.ru",$output, $status);
+// под *nix заменить -n 1 на -c 1
+        if ($status <> 0) {
+//echo "Offline";
+        }
+sleep(10);
+        return response()->json(['message' => __($output)]);
     }
 }

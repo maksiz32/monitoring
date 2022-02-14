@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Создать/отредактировать принтер') }}</div>
+                    <div class="card-header">{{ __('Добавить принтер') }}</div>
 
                     <div class="card-body">
 
@@ -37,6 +37,25 @@
                             </div>
 
                             <div class="row mb-3">
+                                <label for="serial_number"
+                                       class="col-md-4 col-form-label text-md-end">{{ __('S/N') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="serial_number" type="text"
+                                           class="form-control @error('serial_number') is-invalid @enderror"
+                                           name="serial_number"
+                                           value="{{old('serial_number')}}"
+                                    >
+
+                                    @error('serial_number')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <label for="description"
                                        class="col-md-4 col-form-label text-md-end">{{ __('Описание') }}</label>
 
@@ -56,12 +75,12 @@
 
                             @isset($points)
                                 <div class="row mb-3">
-                                    <label for="points_id"
+                                    <label for="point_id"
                                            class="col-md-4 col-form-label text-md-end">{{ __('На какой точке принтер') }}</label>
 
                                     <div class="col-md-6">
-                                        <select class="form-select" aria-label="На какой точке принтер"
-                                                name="pointId">
+                                        <select class="form-select @error('point_id') is-invalid @enderror" aria-label="На какой точке принтер"
+                                                name="point_id">
                                             <option class="text-muted" value="">Нет привязки к точке
                                             </option>
                                             @foreach($points as $point)
@@ -69,7 +88,7 @@
                                             @endforeach
                                         </select>
 
-                                        @error('points_id')
+                                        @error('point_id')
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -78,10 +97,33 @@
                                 </div>
                             @endisset
 
+                            <div class="row mb-3">
+                                <label for="is_spare"
+                                       class="col-md-4 col-form-label text-md-end">{{ __('Есть запасной картридж?') }}</label>
+
+                                <div class="col-md-6">
+                                    <select class="form-select @error('is_spare') is-invalid @enderror" aria-label="Есть запасной картридж?" required
+                                            name="is_spare">
+                                        <option value="1">
+                                            ЕСТЬ
+                                        </option>
+                                        <option selected value="2">
+                                            НЕТ
+                                        </option>
+                                    </select>
+
+                                    @error('is_spare')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="row mb-0">
-                                <div class="col-md-8 offset-md-4">
+                                <div class="d-grid col-6 mx-auto">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Ввод') }}
+                                        {{ __('Добавить') }}
                                     </button>
                                 </div>
                             </div>

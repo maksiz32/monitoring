@@ -12,10 +12,11 @@ class Device extends Model
     protected $fillable = [
         'name',
         'description',
+        'point_id'
     ];
 
     public function points()
     {
-        return $this->belongsToMany(Point::class)->withPivot('ip');
+        return $this->belongsTo(Point::class, 'id', 'point_id');
     }
 }

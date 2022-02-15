@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class PrinterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('is_admin')->except(['list']);
+    }
+
     public function new(Printer $printer)
     {
         return view('printer.new', ['printer' => $printer]);
@@ -16,6 +21,8 @@ class PrinterController extends Controller
 
     public function edit(Printer $printer)
     {
+        $printer = Printer::find($printer->id);
+
         return view('printer.new', ['printer' => $printer]);
     }
 

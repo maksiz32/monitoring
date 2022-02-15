@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('is_admin')->except(['list']);
+    }
+
     public function new(Contract $contract)
     {
         return view('contract.new', ['contract' => $contract]);
@@ -17,7 +22,10 @@ class ContractController extends Controller
 
     public function edit(Contract $contract)
     {
-        return view('contract.new', ['contract' => $contract]);
+        $contract = Contract::find($contract->id);
+        $points = Point::all();
+
+        return view('contract.new', ['contract' => $contract, 'points' => $points]);
     }
 
     public function store(Contract $contract): ?int
@@ -35,9 +43,6 @@ class ContractController extends Controller
         $contract_id = $this->store($contractRes);
 
         if (isset($contract_id)) {
-
-            $point = Point::where('contract_id', $contract->id)->first();
-
             return redirect(url('/point'))
                 ->with(['message' => __('messages.contract.store.success')]);
         }

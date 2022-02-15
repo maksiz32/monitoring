@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class PointController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('is_admin')->except(['index']);
+    }
+
     public function index()
     {
         $points = Point::pointsByCity();

@@ -11294,6 +11294,24 @@ textarea.form-control-lg {
 .left-menu__active {
   background-color: #d2f4ea;
 }
+.left-menu__list {
+  font-size: 0;
+}
+.left-menu__list-item {
+  font-size: 15px;
+}
+.left-menu__list-city__btn {
+  text-align: left;
+}
+
+.point-view__exec:hover {
+  background-color: #0d6efd !important;
+  cursor: pointer;
+}
+.point-view__exec:active {
+  background-color: #1a202c !important;
+  color: #fff !important;
+}
 body {
     font-size: .875rem;
 }

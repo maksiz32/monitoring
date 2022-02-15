@@ -13,30 +13,26 @@ class PrinterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('is_admin')->except(['list']);
+        $this->middleware('is_admin')->except(['index']);
     }
 
     public function index()
     {
-        return view('printer.list', ['printers' => Printer::with(['points'])->get()]);
+        return view('printer.list', ['printers' => Printer::orderBy('printers.id')->get()]);
     }
 
     public function store(PrinterRequest $request)
     {
-        $printer = Printer::create($request->validated());
-        $printerId = $printer->save();
+        $printer = new Printer;
+        $printer = $printer->fill($request->validated());
+        $printer->is_spare = (int)$request->is_spare === 1;
 
-        // Добавляю связь в сводную таблицу
-        if (isset($request->pointId)) {
-            $printer->points()->attach((int)$request->pointId);
-        }
-
-        if (isset($printerId)) {
+        if ($printer->save()) {
             return redirect(route('printer.index'))
-                ->with('message', __('messages.printer.store.success'));
+                ->with('message', __('messages.printer.input.success'));
         }
 
-        return back()->with('errors', __('messages.printer.store.fail'));
+        return back()->with('errors', __('messages.printer.input.fail'));
     }
 
     public function create(Printer $printer)
@@ -46,41 +42,41 @@ class PrinterController extends Controller
         return view('printer.new', ['printer' => $printer, 'points' => $points]);
     }
 
-    public function update(Request $request, Printer $printer)
+    public function update(PrinterRequest $request, Printer $printer)
     {
-        $validated = $request->validate([
-                                            'id' => 'required|nullable|integer|exists:printers,id',
-                                            'name' => ['required', 'string', 'max:255'],
-                                            'description' => 'nullable|string',
-                                            'pointId' => 'sometimes|nullable|integer|exists:points,id',
-                                        ]);
-        $printerRes = $printer->fill($validated);
+        $printerRes = $printer->fill($request->validated());
+
+        $printerRes->is_spare = (int)$request->is_spare === 1;
+
         $printerId = $printerRes->save();
 
-        if (isset($request->pointId)) {
-            $printer->points()->detach();
-            $printer->points()->attach([
-                                           'printer_id' => $printerId,
-                                           'point_id' => (int)$request->pointId,
-                                       ]);
-        } else {
-            $printer->points()->detach();
-        }
-
         if (isset($printerId)) {
-
             return redirect(route('printer.index'))
-                ->with('message', __('messages.printer.store.success'));
+                ->with('message', __('messages.printer.edit.success'));
         }
 
-        return back()->with('errors', __('messages.printer.store.fail'));
+        return back()->with('errors', __('messages.printer.edit.fail'));
     }
 
     public function edit(Printer $printer)
     {
         $points = Point::where('is_active', true)->get();
-        $printer = Printer::find($printer->id);
+        $printer = Printer::findOrFail($printer->id);
 
         return view('printer.edit', ['printer' => $printer, 'points' => $points]);
+    }
+
+    public function destroy(Printer $printer)
+    {
+        try {
+            $printer->delete();
+
+            return redirect(route('printer.index'))
+                ->with(['message' => __('messages.printer.delete.success')]);
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage() . PHP_EOL, $e->getTrace());
+
+            return response()->json(['message' => __('messages.printer.delete.fail')]);
+        }
     }
 }

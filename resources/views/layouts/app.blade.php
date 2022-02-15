@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -46,12 +47,13 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end"
                                     aria-labelledby="navbarDarkDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="#">Создать подразделение</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('printer.create') }}">Создать принтер</a>
+                                    <li><a class="dropdown-item" href="{{ route('contract.index') }}">Договоры</a>
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Создать удалённое управление</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('contract.new') }}">Создать договор</a>
+                                    <li><a class="dropdown-item" href="{{ route('printer.index') }}">Принтеры</a>
                                     </li>
+                                    <li><a class="dropdown-item" href="{{ route('remote.index') }}">Удаленные подключения</a>
+                                    </li>
+                                    @if(\Illuminate\Support\Facades\Auth::user()->role === 'admin')
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -60,12 +62,13 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="{{ route('contract.list') }}">Договоры</a>
+                                    <li><a class="dropdown-item" href="{{ route('point.new') }}">Создать подразделение</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('printer.create') }}">Создать принтер</a>
                                     </li>
-                                    <li><a class="dropdown-item" href="{{ route('printer.index') }}">Принтеры</a>
+                                    <li><a class="dropdown-item" href="{{ route('remote.create') }}">Создать удалённое управление</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('contract.create') }}">Создать договор</a>
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Удаленные подключения</a>
-                                    </li>
+                                    @endif
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -94,5 +97,7 @@
         @yield('content')
     </div>
 </div>
+<script src="{{ asset('js/common/remote-list.js') }}" defer></script>
+@stack('js')
 </body>
 </html>

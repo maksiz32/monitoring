@@ -23,5 +23,13 @@ class UserAdminSeeder extends Seeder
                                         'middle_name' => 'Admin',
                                         'role' => 'admin',
                                    ]);
+        DB::table('users')->insert([
+                                       'name' => 'А',
+                                       'email' => 'user@admin.ru',
+                                       'password' => Hash::make('1'),
+                                       'surname' => 'Усманов',
+                                       'middle_name' => 'Admin',
+                                       'role' => 'user',
+                                   ]);
     }
 }

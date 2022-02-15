@@ -2,7 +2,22 @@
 
 @section('content')
     <div class="container">
-        <h1>Договоры</h1>
+        <div class="row justify-content-between">
+            <div class="col-3">
+                <h1>Договоры</h1>
+            </div>
+
+            @if(session('message'))
+                <div class="alert alert-success mt-3 mb-3">
+                    {!! session()->get('message') !!}
+                </div>
+            @endif
+
+            <div class="col-2">
+                <a class="btn btn-success text-right" href="{{route('contract.create')}}">Добавить договор</a>
+            </div>
+        </div>
+
         <table class="table table-hover">
             <thead>
             <tr>
@@ -26,8 +41,12 @@
                     <th>{{$contract->price}}</th>
                     <th>{{$contract->login_pppoe}}</th>
                     <th>{{$contract->password_pppoe}}</th>
-                    <th>{{$contract->point->city . ', ' . $contract->point->address}}</th>
-                    <th><a href="{{ route('contract.edit', ['contract' => $contract->id]) }}" class="link-warning">Edit</a></th>
+                    <th>
+                        @isset($contract->point)
+                        {{$contract->point->city . ', ' . $contract->point->address}}
+                        @endisset
+                    </th>
+                    <th><a href="{{ route('contract.edit', ['contract' => $contract]) }}" class="link-warning">Edit</a></th>
                 </tr>
             @endforeach
             </tbody>

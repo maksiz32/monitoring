@@ -10,12 +10,13 @@ class RemoteControl extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'number',
         'description',
+        'point_id'
     ];
 
     public function point()
     {
-        return $this->belongsTo(Point::class);
+        return $this->belongsTo(Point::class, 'id', 'point_id');
     }
 }

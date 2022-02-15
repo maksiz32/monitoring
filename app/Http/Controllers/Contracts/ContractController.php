@@ -52,6 +52,6 @@ class ContractController extends Controller
 
     public function list()
     {
-        return view('contract.list', ['contracts' => Contract::with(['points'])->get()]);
+        return view('contract.list', ['contracts' => Contract::with(['point'])->get()]);
     }
 }

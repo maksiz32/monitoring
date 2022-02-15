@@ -17,7 +17,7 @@
                     <th scope="row">{{$loop->iteration}}</th>
                     <th>{{$printer->name}}</th>
                     <th>{{$printer->description}}</th>
-                    <th><a href="{{ route('printer.edit', ['id' => $printer->id]) }}" class="link-warning">Edit</a></th>
+                    <th><a href="{{ route('printer.edit', ['printer' => $printer->id]) }}" class="link-warning">Edit</a></th>
                 </tr>
             @endforeach
             </tbody>

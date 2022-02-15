@@ -17,12 +17,14 @@ class ContractController extends Controller
 
     public function new(Contract $contract)
     {
-        return view('contract.new', ['contract' => $contract]);
+        $points = Point::where('is_active', true)->get();
+
+        return view('contract.new', ['contract' => $contract, 'points' => $points]);
     }
 
     public function edit(Contract $contract)
     {
-        $contract = Contract::find($contract->id);
+        $contract = Contract::with(['point'])->find($contract->id);
         $points = Point::all();
 
         return view('contract.new', ['contract' => $contract, 'points' => $points]);

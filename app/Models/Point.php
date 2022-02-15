@@ -53,4 +53,8 @@ class Point extends Model
 
         return $points->groupBy('city');
     }
+
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
 }

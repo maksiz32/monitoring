@@ -127,9 +127,10 @@
 
                                     <div class="col-md-6">
                                         <select class="form-select" aria-label="На какой точке договор">
-                                            <option selected>Open this select menu</option>
+                                            <option class="text-muted">Нет привязки к точке</option>
                                             @foreach($points as $point)
                                                 <option
+                                                    @if(isset($contract->point) && $contract->point->id === $point->id) selected @endif
                                                     value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
                                             @endforeach
                                         </select>

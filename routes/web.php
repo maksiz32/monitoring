@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'point', 'as' => 'point.'], function () {
         Route::get('/', [PointController::class, 'index'])->name('point');
-        Route::get('/{point}/view', [PointController::class, 'point'])->name('onepoint');
+        Route::get('/{point}/{city}/view', [PointController::class, 'point'])->name('onepoint');
 
         Route::group(['middleware' => 'is_admin'], function () {
             Route::get('/{point}/edit', [PointController::class, 'edit'])->name('edit');

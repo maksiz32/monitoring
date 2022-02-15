@@ -6,3 +6,15 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+//Logo
+.navbar-brand {
+    &__logo {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+.left-menu__active {
+    background-color: #d2f4ea;
+}

@@ -11286,6 +11286,14 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.navbar-brand__logo {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.left-menu__active {
+  background-color: #d2f4ea;
+}
 body {
     font-size: .875rem;
 }

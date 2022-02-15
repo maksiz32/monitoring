@@ -15,7 +15,9 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('printer.store') }}">
+                        <form method="POST" action="{{ route('printer.update', ['printer' => $printer->id]) }}">
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{old('id', $printer->id)}}">
                             @csrf
                             <div class="row mb-3">
                                 <label for="name"
@@ -25,7 +27,7 @@
                                     <input id="name" type="text"
                                            class="form-control @error('name') is-invalid @enderror"
                                            name="name"
-                                           value="{{old('name')}}"
+                                           value="{{old('name', $printer->name)}}"
                                            required autofocus>
 
                                     @error('name')
@@ -44,7 +46,7 @@
                                     <textarea id="description" type="text"
                                               class="form-control @error('description') is-invalid @enderror"
                                               name="description"
-                                    >{{old('description')}}</textarea>
+                                    >{{old('description', $printer->description)}}</textarea>
 
                                     @error('description')
                                     <span class="invalid-feedback" role="alert">
@@ -65,7 +67,11 @@
                                             <option class="text-muted" value="">Нет привязки к точке
                                             </option>
                                             @foreach($points as $point)
-                                                <option value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
+                                                <option
+                                                    @if(isset($printer->points[0]) && $printer->points[0]['id'] === $point->id)
+                                                    selected
+                                                    @endif
+                                                    value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
                                             @endforeach
                                         </select>
 

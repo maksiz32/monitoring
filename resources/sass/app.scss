@@ -6,3 +6,39 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+//Logo
+.navbar-brand {
+    &__logo {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+.left-menu {
+    &__active {
+        background-color: #d2f4ea;
+    }
+
+    &__list {
+        font-size: 0;
+
+        &-item {
+            font-size: 15px;
+        }
+
+        &-city__btn {
+            text-align: left;
+        }
+    }
+}
+.point-view__exec {
+    &:hover {
+        background-color: #0d6efd !important;
+        cursor: pointer;
+    }
+    &:active {
+        background-color: #1a202c !important;
+        color: #fff !important;
+    }
+}

@@ -11303,6 +11303,20 @@ textarea.form-control-lg {
 .left-menu__list-city__btn {
   text-align: left;
 }
+.left-menu__export {
+  display: grid;
+}
+.left-menu__export a {
+  text-decoration: none;
+  color: #000;
+  padding: 0 0 5px 5px;
+}
+.left-menu__export a:hover {
+  -webkit-text-decoration: #bb2d3b;
+          text-decoration: #bb2d3b;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+}
 
 .point-view__exec:hover {
   background-color: #0d6efd !important;
@@ -11311,6 +11325,46 @@ textarea.form-control-lg {
 .point-view__exec:active {
   background-color: #1a202c !important;
   color: #fff !important;
+}
+.point-view__screen {
+  padding: 10px;
+  width: 520px;
+  min-height: 180px;
+  background-color: #000;
+  color: #fff;
+  font-family: monospace;
+  border-radius: 5px 5px 0 0;
+  border-top: gray solid 20px;
+  margin: 15px 0;
+}
+
+.point-view__miracle {
+  -webkit-animation: blink 2s linear infinite;
+  animation: blink 2s linear infinite;
+}
+
+@-webkit-keyframes blink {
+  50% {
+    color: #222222;
+  }
+  51% {
+    color: rgba(34, 34, 34, 0);
+  }
+  100% {
+    color: rgba(34, 34, 34, 0);
+  }
+}
+
+@keyframes blink {
+  50% {
+    color: #222222;
+  }
+  51% {
+    color: rgba(34, 34, 34, 0);
+  }
+  100% {
+    color: rgba(34, 34, 34, 0);
+  }
 }
 body {
     font-size: .875rem;

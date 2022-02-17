@@ -42,16 +42,18 @@
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink"
-                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {{ Auth::user()->name }}
+                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ Auth::user()->name . ' ' . strtoupper(mb_substr(Auth::user()->surname, 0, 1)) . '.' }}
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-lg-end"
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
                                     aria-labelledby="navbarDarkDropdownMenuLink">
                                     <li><a class="dropdown-item" href="{{ route('contract.index') }}">Договоры</a>
                                     </li>
                                     <li><a class="dropdown-item" href="{{ route('printer.index') }}">Принтеры</a>
                                     </li>
                                     <li><a class="dropdown-item" href="{{ route('remote.index') }}">Удаленные подключения</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="{{ route('device.index') }}">Устройства</a>
                                     </li>
                                     @if(\Illuminate\Support\Facades\Auth::user()->role === 'admin')
                                     <li>
@@ -66,6 +68,7 @@
                                     <li><a class="dropdown-item" href="{{ route('printer.create') }}">Создать принтер</a>
                                     </li>
                                     <li><a class="dropdown-item" href="{{ route('remote.create') }}">Создать удалённое управление</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('device.create') }}">Создать устройство</a></li>
                                     <li><a class="dropdown-item" href="{{ route('contract.create') }}">Создать договор</a>
                                     </li>
                                     @endif

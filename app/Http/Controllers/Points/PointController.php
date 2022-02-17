@@ -8,7 +8,14 @@ use App\Models\Contract;
 use App\Models\Point;
 use App\Models\RemoteControl;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Exception;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PointController extends Controller
 {
@@ -27,7 +34,7 @@ class PointController extends Controller
     public function point(Point $point, $city)
     {
         $points = Point::pointsByCity();
-        $point = Point::findOrFail($point->id);
+        $point = Point::with(['printers', 'devices', 'remotes'])->findOrFail($point->id);
 
         return view('point.point', ['points' => $points, 'point' => $point, 'city' => (int)$city]);
     }
@@ -113,6 +120,529 @@ class PointController extends Controller
         return redirect()->route('point.point')->with('message', __('messages.xls.store.success'));
     }
 
+    /**
+     * Общая выгрузка
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function exportXls1()
+    {
+        $defaultStyleArray = array(
+            'font' => array(
+                'color' => array('rgb' => '000000'),
+                'size' => 12,
+                'name' => 'Calibri'
+            )
+        );
+
+        $staticTitle = [
+            '№ п/п',
+            'Город',
+            'Адрес',
+            'Статус точки',
+            'Роутер',
+            'LAN IP',
+            'VPN',
+            'WAN IP',
+            'Статус телефонии',
+            'Провайдер',
+            'Логин',
+            'Пароль',
+            'ИБП',
+        ];
+
+        $contractTitle = [
+            'Номер договора',
+            'Владелец',
+            'Скорость',
+            'Стоимость',
+            'Логин PPPoE',
+            'Пароль PPPoE',
+        ];
+
+        $printerTitle = [
+            'Принтер',
+            'S/N',
+            'Описание',
+            'Запасной картридж',
+        ];
+
+        $remoteTitle = [
+            'Номер подключения',
+            'Описание/пароль',
+        ];
+
+        $deviceTitle = [
+            'Устройство',
+            'S/N',
+            'Разное',
+        ];
+
+        $tableHeadStyle = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+        ];
+
+        $tableBodyStyle = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+        ];
+
+        $tableBodyStyleNotActive = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => [
+                    'argb' => 'FFA0A0A0',
+                ],
+            ],
+        ];
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator('Мир упаковки')
+            ->setLastModifiedBy('Мир упаковки')
+            ->setTitle('Мир упаковки - Точки')
+            ->setSubject('Мир упаковки - Точки')
+            ->setDescription('Мир упаковки - Точки');
+
+        $currentRow = 1;
+
+        $points = Point::with(['printers', 'devices', 'remotes', 'contract'])->get();
+
+        // Получить максимальные значения связанных данных
+        $maxPrintersCount = 0;
+        $maxDevicesCount = 0;
+        $maxRemotesCount = 0;
+        foreach ($points as $point) {
+            $countPrinters = $point->printers->count();
+            $maxPrintersCount = ($maxPrintersCount < $countPrinters) ? $countPrinters : $maxPrintersCount;
+
+            $countDevices = $point->devices->count();
+            $maxDevicesCount = ($maxDevicesCount < $countDevices) ? $countDevices : $maxDevicesCount;
+
+            $countRemotes = $point->remotes->count();
+            $maxRemotesCount = ($maxRemotesCount < $countRemotes) ? $countRemotes : $maxRemotesCount;
+        }
+
+        $spreadsheet->createSheet();
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getDefaultColumnDimension()->setWidth(18);
+
+        $spreadsheet->getDefaultStyle()
+            ->applyFromArray($defaultStyleArray);
+        $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);;
+
+        $maxColumn = 1;
+        // Шапка для точки
+        foreach ($staticTitle as $title) {
+            $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+            $maxColumn++;
+        }
+
+        // Шапка для договора
+        foreach ($contractTitle as $title) {
+            $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+            $maxColumn++;
+        }
+
+        // Шапка для удалёнок
+        if ($maxRemotesCount > 0) {
+            for ($i = 0; $i < $maxRemotesCount; $i++) {
+                foreach ($remoteTitle as $title) {
+                    $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+                    $maxColumn++;
+                }
+            }
+        }
+
+        // Шапка для принтеров
+        if ($maxPrintersCount > 0) {
+            for ($i = 0; $i < $maxPrintersCount; $i++) {
+                foreach ($printerTitle as $title) {
+                    $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+                    $maxColumn++;
+                }
+            }
+        }
+
+        // Шапка для устройств
+        if ($maxDevicesCount > 0) {
+            for ($i = 0; $i < $maxDevicesCount; $i++) {
+                foreach ($deviceTitle as $title) {
+                    $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+                    $maxColumn++;
+                }
+            }
+        }
+
+        $maxColumn--;
+        $sheet->getStyleByColumnAndRow(1, $currentRow, $maxColumn, $currentRow)
+            ->applyFromArray($tableHeadStyle);
+
+        $currentRow++;
+
+        foreach ($points as $index => $point) {
+            // Точки продаж
+            $columnIndex = 1;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $index + 1);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->city);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->address);
+            $columnIndex++;
+            $pointStatus = ($point->is_active) ? '' : 'Закрыта';
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $pointStatus);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->router);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->lan_ip);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->vpn_ip);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->wan_ip);
+            $columnIndex++;
+            $phonesStatus = ($point->telephony_status) ? 'Готово' : '';
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $phonesStatus);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->provider);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->login);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->password);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->ups);
+            $columnIndex++;
+
+            // Договор
+            if ($point->contract) {
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, "№ " . $point->contract->number);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->contracts_master);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->speed);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->price);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->login_pppoe);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->password_pppoe);
+                $columnIndex++;
+            } else {
+                $columnIndex += 6;
+            }
+
+            // Удалёнки
+            if ($maxRemotesCount > 0) {
+                for ($i = 0; $i < $maxRemotesCount; $i++) {
+                    $sheet->setCellValueByColumnAndRow(
+                        $columnIndex,
+                        $currentRow,
+                        $point->remotes[$i]->number ?? ''
+                    );
+                    $columnIndex++;
+                    $sheet->setCellValueByColumnAndRow(
+                        $columnIndex,
+                        $currentRow,
+                        $point->remotes[$i]->description ?? ''
+                    );
+                    $columnIndex++;
+                }
+            }
+
+            // Принтеры
+            if ($maxPrintersCount > 0) {
+                for ($i = 0; $i < $maxPrintersCount; $i++) {
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->printers[$i]->name ?? '');
+                    $columnIndex++;
+                    $sheet->setCellValueByColumnAndRow(
+                        $columnIndex,
+                        $currentRow,
+                        $point->printers[$i]->serial_number ?? ''
+                    );
+                    $columnIndex++;
+                    $sheet->setCellValueByColumnAndRow(
+                        $columnIndex,
+                        $currentRow,
+                        $point->printers[$i]->description ?? ''
+                    );
+                    $columnIndex++;
+                    $phonesStatus = isset(
+                        $point->printers[$i]->is_spare
+                    ) ? $point->printers[$i]->is_spare ? 'Есть' : 'Нет' : '';
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $phonesStatus);
+                    $columnIndex++;
+                }
+            }
+
+            // Устройства
+            if ($maxDevicesCount > 0) {
+                for ($i = 0; $i < $maxDevicesCount; $i++) {
+                    $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->devices[$i]->name ?? '');
+                    $columnIndex++;
+                    $sheet->setCellValueByColumnAndRow(
+                        $columnIndex,
+                        $currentRow,
+                        $point->devices[$i]->description ?? ''
+                    );
+                    $columnIndex++;
+                }
+            }
+
+            // Выравнивание и бордеры или заливка для всего ряда
+            if ($point->is_active) {
+                $sheet->getStyleByColumnAndRow(1, $currentRow, $columnIndex - 1, $currentRow)
+                    ->applyFromArray($tableBodyStyle);
+            } else {
+                $sheet->getStyleByColumnAndRow(1, $currentRow, $columnIndex - 1, $currentRow)
+                    ->applyFromArray($tableBodyStyleNotActive);
+            }
+
+            $currentRow++;
+        }
+
+        // Экспорт полученных данных
+        $exportPath = 'exports/main/';
+        $filename = 'Общая_выгрузка_' . uniqid('', false) . '.xlsx';
+        try {
+            $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
+
+            ob_start();
+            $writer->save('php://output');
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            Storage::disk('public')->put($exportPath . $filename, $content);
+            $path = Storage::disk('public')->path($exportPath . $filename);
+        } catch (Exception $e) {
+            throw new \Exception('Ошибка при экспорте стадий (' . $e->getMessage() . ')');
+        }
+
+        return response()->download($path, basename($path));
+    }
+
+    /**
+     * Выгрузка финансовая
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function exportXls2()
+    {
+        $defaultStyleArray = array(
+            'font' => array(
+                'color' => array('rgb' => '000000'),
+                'size' => 12,
+                'name' => 'Calibri'
+            )
+        );
+
+        $staticTitle = [
+            '№ п/п',
+            'Город',
+            'Адрес',
+            'Статус точки',
+            'Провайдер',
+        ];
+
+        $contractTitle = [
+            'Номер договора',
+            'Владелец',
+            'Скорость',
+            'Стоимость',
+        ];
+
+        $tableHeadStyle = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+        ];
+
+        $tableBodyStyle = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+        ];
+
+        $tableBodyStyleNotActive = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_RIGHT,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => [
+                        'rgb' => '000000'
+                    ]
+                ],
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => [
+                    'argb' => 'FFA0A0A0',
+                ],
+            ],
+        ];
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator('Мир упаковки')
+            ->setLastModifiedBy('Мир упаковки')
+            ->setTitle('Мир упаковки - Финансы')
+            ->setSubject('Мир упаковки - Финансы')
+            ->setDescription('Мир упаковки - Финансы');
+
+        $currentRow = 1;
+
+        $points = Point::with(['contract'])->get();
+
+        $spreadsheet->createSheet();
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getDefaultColumnDimension()->setWidth(18);
+
+        $spreadsheet->getDefaultStyle()
+            ->applyFromArray($defaultStyleArray);
+        $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);;
+
+        $maxColumn = 1;
+        // Шапка для точки
+        foreach ($staticTitle as $title) {
+            $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+            $maxColumn++;
+        }
+
+        // Шапка для договора
+        foreach ($contractTitle as $title) {
+            $sheet->setCellValueByColumnAndRow($maxColumn, $currentRow, $title);
+            $maxColumn++;
+        }
+
+        $maxColumn--;
+        $sheet->getStyleByColumnAndRow(1, $currentRow, $maxColumn, $currentRow)
+            ->applyFromArray($tableHeadStyle);
+
+        $currentRow++;
+
+        foreach ($points as $index => $point) {
+            // Точки продаж
+            $columnIndex = 1;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $index + 1);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->city);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->address);
+            $columnIndex++;
+            $pointStatus = ($point->is_active) ? '' : 'Закрыта';
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $pointStatus);
+            $columnIndex++;
+            $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->provider);
+            $columnIndex++;
+
+            // Договор
+            if ($point->contract) {
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, "№ " . $point->contract->number);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->contracts_master);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->speed);
+                $columnIndex++;
+                $sheet->setCellValueByColumnAndRow($columnIndex, $currentRow, $point->contract->price);
+                $columnIndex++;
+            } else {
+                $columnIndex += 4;
+            }
+
+            // Выравнивание и бордеры или заливка для всего ряда
+            if ($point->is_active) {
+                $sheet->getStyleByColumnAndRow(1, $currentRow, $columnIndex - 1, $currentRow)
+                    ->applyFromArray($tableBodyStyle);
+            } else {
+                $sheet->getStyleByColumnAndRow(1, $currentRow, $columnIndex - 1, $currentRow)
+                    ->applyFromArray($tableBodyStyleNotActive);
+            }
+
+            $currentRow++;
+        }
+
+        // Экспорт полученных данных
+        $exportPath = 'exports/main/';
+        $filename = 'Фин_выгрузка_' . uniqid('', false) . '.xlsx';
+        try {
+            $writer = IOFactory::createWriter($spreadsheet, "Xlsx");
+
+            ob_start();
+            $writer->save('php://output');
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            Storage::disk('public')->put($exportPath . $filename, $content);
+            $path = Storage::disk('public')->path($exportPath . $filename);
+        } catch (Exception $e) {
+            throw new \Exception('Ошибка при экспорте стадий (' . $e->getMessage() . ')');
+        }
+
+        return response()->download($path, basename($path));
+    }
+
     public function new()
     {
         return view('point.new');
@@ -167,12 +697,9 @@ class PointController extends Controller
 
     public function ping($ip)
     {
-        exec("ping -c 4 www.google.ru",$output, $status);
-// под *nix заменить -n 1 на -c 1
-        if ($status <> 0) {
-//echo "Offline";
-        }
-sleep(10);
-        return response()->json(['message' => __($output)]);
+        $output = shell_exec("ping $ip -n 4");
+        $latency = iconv("cp866", "utf-8", $output);
+
+        return ['message' => __($latency)];
     }
 }

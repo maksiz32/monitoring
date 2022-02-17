@@ -32,6 +32,8 @@ Route::group(['middleware' => 'active'], function () {
     Route::group(['prefix' => 'point', 'as' => 'point.'], function () {
         Route::get('/', [PointController::class, 'index'])->name('point');
         Route::get('/{point}/{city}/view', [PointController::class, 'point'])->name('onepoint');
+        Route::get('/export-points', [PointController::class, 'exportXls1'])->name('export-all');
+        Route::get('/export-finance', [PointController::class, 'exportXls2'])->name('export-finance');
 
         Route::group(['middleware' => 'is_admin'], function () {
             Route::get('/{point}/edit', [PointController::class, 'edit'])->name('edit');

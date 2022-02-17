@@ -28,44 +28,58 @@
                                  aria-labelledby="panelsStayOpen-headingMain">
                                 <div class="accordion-body">
 
-                                    <div><strong>{{ __('Адрес: ') }}</strong>{{ $point->city . ', ' . $point->address }}
+                                    <div>
+                                        <strong>{{ __('Адрес: ') }}</strong>{{ $point->city . ', ' . $point->address }}
                                     </div>
-                                    <div><strong>{{ __('Роутер: ') }}</strong>{{ $point->router }}</div>
-                                    <div><strong>{{ __('LAN ip: ') }}</strong>
-                                        <a href="{{ 'http://' . $point->lan_ip }}" class="link-dark rounded"
-                                           target="_blank">{{ 'http://' . $point->lan_ip }}</a>
-                                        <span class="badge bg-warning text-dark point-view__exec"
-                                              data-ip="{{ $point->lan_ip }}"
-                                              data-action="lan"
-                                        >
+                                    <div>
+                                        <strong>{{ __('Роутер: ') }}</strong>{{ $point->router }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ __('LAN ip: ') }}</strong>
+                                        @isset($point->lan_ip)
+                                            <a href="{{ 'http://' . $point->lan_ip }}" class="link-dark rounded"
+                                               target="_blank">{{ 'http://' . $point->lan_ip }}</a>
+                                            <span class="badge bg-warning text-dark point-view__exec"
+                                                  data-ip="{{ $point->lan_ip }}"
+                                                  data-action="lan"
+                                            >
                                             PING
                                         </span>
+                                        @endisset
                                     </div>
                                     <div class="point-view__screen point-view__screen-lan point-view__miracle"
                                          style="display: none">
                                         Loading ...
                                     </div>
 
-                                    <div><strong>{{ __('VPN ip: ') }}</strong>{{$point->vpn_ip}}
-                                        <span class="badge bg-warning text-dark point-view__exec"
-                                              data-ip="{{ $point->vpn_ip }}"
-                                              data-action="vpn"
-                                        >
+                                    <div>
+                                        <strong>{{ __('VPN ip: ') }}</strong>
+                                        @isset($point->vpn_ip)
+                                            {{$point->vpn_ip}}
+                                            <span class="badge bg-warning text-dark point-view__exec"
+                                                  data-ip="{{ $point->vpn_ip }}"
+                                                  data-action="vpn"
+                                            >
                                             PING
                                         </span>
+                                        @endisset
                                     </div>
                                     <div class="point-view__screen point-view__screen-vpn point-view__miracle"
                                          style="display: none">
                                         Loading ...
                                     </div>
 
-                                    <div><strong>{{ __('WAN ip: ') }}</strong>{{$point->wan_ip}}
-                                        <span class="badge bg-warning text-dark point-view__exec"
-                                              data-ip="{{ $point->wan_ip }}"
-                                              data-action="wan"
-                                        >
+                                    <div>
+                                        <strong>{{ __('WAN ip: ') }}</strong>
+                                        @isset($point->wan_ip)
+                                            {{$point->wan_ip}}
+                                            <span class="badge bg-warning text-dark point-view__exec"
+                                                  data-ip="{{ $point->wan_ip }}"
+                                                  data-action="wan"
+                                            >
                                             PING
                                         </span>
+                                        @endisset
                                     </div>
                                     <div class="point-view__screen point-view__screen-wan point-view__miracle"
                                          style="display: none">
@@ -261,7 +275,8 @@
                     $(`.point-view__screen-${action}`).html(Response.message.replace(/(?:\r\n|\r|\n)/g, '<br />'));
                 },
                 error(Error) {
-                    console.log(Error);
+                    $(`.point-view__screen-${action}`).removeClass('point-view__miracle');
+                    $(`.point-view__screen-${action}`).html('Непредвиденная ошибка сервиса');
                 },
             });
         });

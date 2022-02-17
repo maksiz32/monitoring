@@ -49,7 +49,7 @@ class Point extends Model
      */
     public static function pointsByCity()
     {
-        $points = self::select('id', 'city', 'address')->orderBy('id')->get();
+        $points = self::select('id', 'city', 'address')->where('is_active', true)->orderBy('id')->get();
 
         return $points->groupBy('city');
     }

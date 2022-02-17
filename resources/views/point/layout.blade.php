@@ -28,7 +28,7 @@
                             @endforeach
                         </li>
                         <li class="border-top my-3"></li>
-                        <a href="#" class="btn btn-outline-success">{{ __('Выгрузить') }}</a>
+                        <a href="{{ route('point.export-xls') }}" class="btn btn-outline-success">{{ __('Выгрузить') }}</a>
                     </ul>
                 </div>
             </div>

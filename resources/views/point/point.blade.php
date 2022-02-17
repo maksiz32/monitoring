@@ -34,15 +34,42 @@
                                     <div><strong>{{ __('LAN ip: ') }}</strong>
                                         <a href="{{ 'http://' . $point->lan_ip }}" class="link-dark rounded"
                                            target="_blank">{{ 'http://' . $point->lan_ip }}</a>
-                                        <span class="badge bg-warning text-dark point-view__exec" data-ip="{{ $point->lan_ip }}">PING</span>
+                                        <span class="badge bg-warning text-dark point-view__exec"
+                                              data-ip="{{ $point->lan_ip }}"
+                                              data-action="lan"
+                                        >
+                                            PING
+                                        </span>
+                                    </div>
+                                    <div class="point-view__screen point-view__screen-lan point-view__miracle"
+                                         style="display: none">
+                                        Loading ...
                                     </div>
 
                                     <div><strong>{{ __('VPN ip: ') }}</strong>{{$point->vpn_ip}}
-                                        <span class="badge bg-warning text-dark point-view__exec" data-ip="{{ $point->vpn_ip }}">PING</span>
+                                        <span class="badge bg-warning text-dark point-view__exec"
+                                              data-ip="{{ $point->vpn_ip }}"
+                                              data-action="vpn"
+                                        >
+                                            PING
+                                        </span>
+                                    </div>
+                                    <div class="point-view__screen point-view__screen-vpn point-view__miracle"
+                                         style="display: none">
+                                        Loading ...
                                     </div>
 
                                     <div><strong>{{ __('WAN ip: ') }}</strong>{{$point->wan_ip}}
-                                        <span class="badge bg-warning text-dark point-view__exec" data-ip="{{ $point->wan_ip }}">PING</span>
+                                        <span class="badge bg-warning text-dark point-view__exec"
+                                              data-ip="{{ $point->wan_ip }}"
+                                              data-action="wan"
+                                        >
+                                            PING
+                                        </span>
+                                    </div>
+                                    <div class="point-view__screen point-view__screen-wan point-view__miracle"
+                                         style="display: none">
+                                        Loading ...
                                     </div>
 
                                     <div>
@@ -84,7 +111,8 @@
                                             <strong>{{ __('Пароль PPPoE: ') }}</strong>{{$point->contract->password_pppoe }}
                                         </div>
                                         <div class="point-contract-item__edit d-grid col-8 mx-auto mt-2">
-                                            <a class="btn btn-primary btn-sm" href="{{ route('contract.edit', ['contract' => $point->contract]) }}">
+                                            <a class="btn btn-primary btn-sm"
+                                               href="{{ route('contract.edit', ['contract' => $point->contract]) }}">
                                                 Перепривязать/отредактировать договор
                                             </a>
                                         </div>
@@ -120,12 +148,13 @@
                                             </div>
 
                                             <div class="point-printer-item__edit d-grid col-8 mx-auto m-2">
-                                                <a class="btn btn-primary btn-sm" href="{{ route('printer.edit', ['printer' => $point->printer]) }}">
+                                                <a class="btn btn-primary btn-sm"
+                                                   href="{{ route('printer.edit', ['printer' => $printer]) }}">
                                                     Перепривязать/отредактировать принтер
                                                 </a>
                                             </div>
 
-                                        @if(!$loop->last)
+                                            @if(!$loop->last)
                                                 <hr class="divider">
                                             @endif
                                         @endforeach
@@ -154,7 +183,8 @@
                                             @endisset
 
                                             <div class="point-remote-item__edit d-grid col-8 mx-auto m-2">
-                                                <a class="btn btn-primary btn-sm" href="{{ route('remote.edit', ['remote' => $remote]) }}">
+                                                <a class="btn btn-primary btn-sm"
+                                                   href="{{ route('remote.edit', ['remote' => $remote]) }}">
                                                     Перепривязать/отредактировать удалёнку
                                                 </a>
                                             </div>
@@ -220,13 +250,15 @@
 @push('js')
     <script type="text/javascript">
         $('.point-view__exec').on('click', (el) => {
+            const action = $(el.target).data('action');
             const ip = $(el.target).data('ip');
-            console.log(ip);
+            $(`.point-view__screen-${action}`).fadeIn();
             $.ajax({
                 method: 'get',
                 url: `/point/ping/${ip}`,
                 success(Response) {
-                    console.log(Response);
+                    $(`.point-view__screen-${action}`).removeClass('point-view__miracle');
+                    $(`.point-view__screen-${action}`).html(Response.message.replace(/(?:\r\n|\r|\n)/g, '<br />'));
                 },
                 error(Error) {
                     console.log(Error);

@@ -13,7 +13,7 @@ class RemoteControlController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('is_admin')->only(['destroy']);
+        $this->middleware('is_admin')->except(['index']);
     }
 
     public function index()

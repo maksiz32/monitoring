@@ -21,28 +21,27 @@ class Point extends Model
             'provider',
             'login',
             'password',
-            'contract_id',
             'ups',
         ];
 
     public function contract()
     {
-        return $this->belongsTo(Contract::class);
+        return $this->hasOne(Contract::class);
     }
 
     public function printers()
     {
-        return $this->belongsToMany(Printer::class)->withPivot('is_spare');
+        return $this->hasMany(Printer::class);
     }
 
     public function devices()
     {
-        return $this->belongsToMany(Device::class)->withPivot('ip');
+        return $this->hasMany(Device::class);
     }
 
-    public function remoteControls()
+    public function remotes()
     {
-        return $this->hasMany(RemoteControl::class);
+        return $this->hasMany(RemoteControl::class, 'point_id', 'id');
     }
 
     /**
@@ -50,8 +49,13 @@ class Point extends Model
      */
     public static function pointsByCity()
     {
-        $points = self::select('id', 'city', 'address')->get();
+        $points = self::select('id', 'city', 'address')->where('is_active', true)->orderBy('id')->get();
 
         return $points->groupBy('city');
     }
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'telephony_status' => 'boolean'
+    ];
 }

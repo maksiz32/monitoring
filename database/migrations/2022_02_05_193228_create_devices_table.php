@@ -16,7 +16,9 @@ class CreateDevicesTable extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
+            $table->string('serial_number', 60)->nullable();
             $table->string('description')->nullable();
+            $table->bigInteger('point_id')->nullable();
             $table->timestamps();
         });
     }

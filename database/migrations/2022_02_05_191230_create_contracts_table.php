@@ -17,11 +17,12 @@ class CreateContractsTable extends Migration
             $table->id();
             $table->string('number', 255);
             $table->string('contracts_master', 255);
+            $table->string('speed', 50)->nullable();
+            $table->string('price', 30)->nullable();
+            $table->string('login_pppoe', 30)->nullable();
+            $table->string('password_pppoe', 20)->nullable();
+            $table->bigInteger('point_id');
             $table->timestamps();
-            $table->foreign('id')
-                ->references('contract_id')
-                ->on('points')
-                ->onDelete('cascade');
         });
     }
 

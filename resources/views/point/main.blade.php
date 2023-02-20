@@ -7,15 +7,14 @@
             <div class="card">
                 <div class="card-body text-center">
                     {{ __('Выберите подразделение') }}
-
-                    @if(session()->get('message'))
-                        <div class="alert alert-success mt-3 mb-3">
-                            {!! session()->get('message') !!}
-                        </div>
-                    @endif
-
                 </div>
             </div>
+
+            @if(session('message'))
+                <div class="alert alert-success mt-3 mb-3">
+                    {!! session()->get('message') !!}
+                </div>
+            @endif
         </div>
     </div>
 </div>

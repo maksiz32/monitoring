@@ -10,8 +10,9 @@ class RemoteControl extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'number',
         'description',
+        'point_id'
     ];
 
     public function point()

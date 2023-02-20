@@ -16,7 +16,10 @@ class CreatePrintersTable extends Migration
         Schema::create('printers', function (Blueprint $table) {
             $table->id();
             $table->string('name', 60);
+            $table->string('serial_number', 60)->nullable();
             $table->string('description', 255)->nullable();
+            $table->boolean('is_spare')->default(false);
+            $table->bigInteger('point_id')->nullable();
             $table->timestamps();
         });
     }

@@ -12,10 +12,17 @@ class Printer extends Model
     protected $fillable = [
         'name',
         'description',
+        'serial_number',
+        'is_spare',
+        'point_id',
     ];
 
-    public function points()
+    public function point()
     {
-        return $this->belongsToMany(Point::class)->withPivot('is_spare');
+        return $this->belongsTo(Point::class);
     }
+
+    protected $casts = [
+        'is_spare' => 'boolean'
+    ];
 }

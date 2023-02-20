@@ -5,14 +5,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Создать/отредактировать договор') }}</div>
+                    <div class="card-header">{{ __('Создать договор') }}</div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('contract.store') }}">
                             @csrf
-                            @isset($contract->id)
-                                <input type="hidden" name="id" value="{{$contract->id}}">
-                            @endisset
 
                             <div class="row mb-3">
                                 <label for="number"
@@ -20,8 +17,9 @@
 
                                 <div class="col-md-6">
                                     <input id="number" type="text"
-                                           class="form-control @error('email') is-invalid @enderror" name="number"
-                                           value="@isset($contract->number){{$contract->number}} @else {{old('number')}} @endisset" required autofocus>
+                                           class="form-control @error('number') is-invalid @enderror" name="number"
+                                           value="{{old('number')}}"
+                                           required autofocus>
 
                                     @error('number')
                                     <span class="invalid-feedback" role="alert">
@@ -39,7 +37,7 @@
                                     <textarea id="contracts_master" type="text"
                                               class="form-control @error('contracts_master') is-invalid @enderror"
                                               name="contracts_master"
-                                              required>@isset($contract->contracts_master){{$contract->contracts_master}} @else {{old('contracts_master', $contract->contracts_master)}}@endisset</textarea>
+                                              required>{{old('contracts_master')}}</textarea>
 
                                     @error('contracts_master')
                                     <span class="invalid-feedback" role="alert">
@@ -56,7 +54,7 @@
                                 <div class="col-md-6">
                                     <input id="speed" type="text"
                                            class="form-control @error('speed') is-invalid @enderror" name="speed"
-                                           value="@isset($contract->speed){{$contract->speed}} @else {{old('speed', $contract->speed)}}@endisset">
+                                           value="{{old('speed')}}">
 
                                     @error('speed')
                                     <span class="invalid-feedback" role="alert">
@@ -73,7 +71,7 @@
                                 <div class="col-md-6">
                                     <input id="price" type="text"
                                            class="form-control @error('price') is-invalid @enderror" name="price"
-                                           value="@isset($contract->price){{$contract->price}} @else {{old('price', $contract->price)}}@endisset">
+                                           value="{{old('price')}}">
 
                                     @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -91,7 +89,7 @@
                                     <input id="login_pppoe" type="text"
                                            class="form-control @error('login_pppoe') is-invalid @enderror"
                                            name="login_pppoe"
-                                           value="@isset($contract->login_pppoe){{$contract->login_pppoe}} @else {{old('login_pppoe', $contract->login_pppoe)}}@endisset">
+                                           value="{{old('login_pppoe')}}">
 
                                     @error('login_pppoe')
                                     <span class="invalid-feedback" role="alert">
@@ -109,7 +107,7 @@
                                     <input id="password_pppoe" type="text"
                                            class="form-control @error('password_pppoe') is-invalid @enderror"
                                            name="password_pppoe"
-                                           value="@isset($contract->password_pppoe){{$contract->password_pppoe}} @else {{old('password_pppoe', $contract->password_pppoe)}}@endisset">
+                                           value="{{old('password_pppoe')}}">
 
                                     @error('password_pppoe')
                                     <span class="invalid-feedback" role="alert">
@@ -119,8 +117,32 @@
                                 </div>
                             </div>
 
+                            @isset($points)
+                                <div class="row mb-3">
+                                    <label for="point_id"
+                                           class="col-md-4 col-form-label text-md-end">{{ __('На какой точке договор') }}</label>
+
+                                    <div class="col-md-6">
+                                        <select class="form-select @error('point_id') is-invalid @enderror"
+                                                aria-label="На какой точке договор" name="point_id" required>
+                                            <option class="text-muted">Нет привязки к точке</option>
+                                            @foreach($points as $point)
+                                                <option
+                                                    value="{{$point->id}}">{{$point->city . ', ' . $point->address}}</option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('point_id')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endisset
+
                             <div class="row mb-0">
-                                <div class="col-md-8 offset-md-4">
+                                <div class="d-grid col-6 mx-auto">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Добавить') }}
                                     </button>

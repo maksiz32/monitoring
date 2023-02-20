@@ -10,55 +10,52 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-    public function new(Contract $contract)
+    public function __construct()
     {
-        return view('contract.new', ['contract' => $contract]);
+        $this->middleware('is_admin')->except(['index']);
     }
 
-    public function edit($id)
+    public function create()
     {
-        $contract = Contract::find($id);
+        $points = Point::where('is_active', true)->get();
 
-        return view('contract.new', ['contract' => $contract]);
+        return view('contract.new', ['points' => $points]);
     }
 
-    public function store(Contract $contract): ?int
+    public function edit(Contract $contract)
     {
+        $contract = Contract::findOrFail($contract->id);
+        $points = Point::all();
+
+        return view('contract.edit', ['contract' => $contract, 'points' => $points]);
+    }
+
+    public function store(ContractRequest $request)
+    {
+        $contract = Contract::create($request->validated());
+
         if ($contract->save()) {
-            return $contract->id;
+            return redirect(url('/contract'))
+                ->with('message', __('messages.contract.input.success'));
         }
 
-        return null;
+        return back()->with('errors', __('messages.contract.input.fail'));
     }
 
-    public function save(ContractRequest $request, Contract $contract)
+    public function update(ContractRequest $request, Contract $contract)
     {
         $contract = $contract->fill($request->validated());
-        $contract_id = $this->store($contract);
 
-        if (isset($contract_id)) {
-
-            $point = Point::where('contract_id', $contract->id)->first();
-
-            return redirect(url('/'))
-                ->with(['message' => __('messages.contract.store.success')]);
+        if ($contract->save()) {
+            return redirect(url('/contract'))
+                ->with('message', __('messages.contract.edit.success'));
         }
 
-        return back()->with(['errors' => __('messages.contract.store.fail')]);
+        return back()->with('errors', __('messages.contract.edit.fail'));
     }
 
-//    public function input(ContractRequest $request)
-//    {
-//        $contract = Contract::create($request->validated());
-//        $contract_id = $this->store($contract);
-//
-//        if (isset($contract_id)) {
-//
-//            return redirect(url('/'))
-//                ->with(['message' => __('messages.contract.input.success')]);
-//        }
-//
-//        return back()->with(['errors' => __('messages.contract.input.fail')]);
-//    }
-
+    public function index()
+    {
+        return view('contract.list', ['contracts' => Contract::orderBy('id')->get()]);
+    }
 }
